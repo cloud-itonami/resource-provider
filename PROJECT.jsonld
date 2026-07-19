@@ -1,0 +1,301 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Project",
+  "name": "Etzhayyim Resource Provider Project (etzhayyim-project-resource-provider)",
+  "status": "In Progress",
+  "identifier": "etzhayyim-project-resource-provider",
+  "description": "A decentralized platform where users provide data (documents, images, location) and computing power (GPU) to receive rewards, powering next-gen AI training and inference.",
+  "hasPart": [
+    {
+      "@type": "CreativeWork",
+      "name": "Strategy",
+      "url": "STRATEGY.jsonld"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Capabilities",
+      "url": "capabilities.jsonld"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Activities",
+      "url": "activities.jsonld"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Architecture",
+      "url": "ARCHITECTURE.jsonld"
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Resource Provider Portal",
+      "url": "../../performers/apps/etzhayyim-performer-sys-etzhayyim-app-www-ti4kgdem/PROJECT.jsonld"
+    }
+  ],
+  "tasks": [
+    {
+      "status": "completed",
+      "task": "Design Resource Provider business model and project structure."
+    },
+    {
+      "status": "completed",
+      "task": "Initialize project configuration and JSONLD definitions."
+    },
+    {
+      "status": "completed",
+      "task": "Implement Resource Onboarding UI in www-ti4kgdem."
+    },
+    {
+      "status": "completed",
+      "task": "Develop Resource Collector Actor for data gathering."
+    },
+    {
+      "status": "pending",
+      "task": "Develop Reward Calculator Actor with Temporal workflow."
+    },
+    {
+      "status": "pending",
+      "task": "Integrate WebGPU for client-side compute contribution."
+    }
+  ],
+  "performers": [
+    {
+      "@type": "Service",
+      "name": "Resource Collector Actor",
+      "identifier": "etzhayyim-performer-sys-etzhayyim-actors-pba7d22f-svc-resource-collector",
+      "url": "projects/etzhayyim-project-resource-provider/actors/svc-resource-collector",
+      "description": "Actor responsible for gathering and validating user-provided resources."
+    },
+    {
+      "@type": "Service",
+      "name": "Reward Calculator Actor",
+      "identifier": "etzhayyim-performer-sys-etzhayyim-actors-pba7d22f-svc-reward-calculator",
+      "url": "projects/etzhayyim-project-resource-provider/actors/svc-reward-calculator",
+      "description": "Actor responsible for calculating and distributing rewards via Temporal."
+    }
+  ],
+  "rdfUnifiedDocuments": {
+    "@type": "Dataset",
+    "name": "Unified top-level RDF/JSON-LD documents",
+    "description": "Consolidated from project top-level *.jsonld files except PROJECT.jsonld.",
+    "documents": [
+      {
+        "fileName": "ARCHITECTURE.jsonld",
+        "content": {
+          "@context": "https://schema.org/",
+          "@type": "CreativeWork",
+          "name": "Architecture - Resource Provider Network",
+          "description": "System architecture for the decentralized resource provider platform.",
+          "components": [
+            {
+              "name": "Frontend Portal",
+              "id": "www-ti4kgdem",
+              "tech": "SvelteKit 5, ConnectRPC, WebGPU",
+              "description": "User interface for managing resource contributions and viewing rewards."
+            },
+            {
+              "name": "Resource Collector",
+              "id": "svc-resource-collector",
+              "tech": "Go, Wasm, gRPC/Connect",
+              "description": "Ingestion service for user-provided data."
+            },
+            {
+              "name": "Reward Engine",
+              "id": "svc-reward-calculator",
+              "tech": "Temporal, Go",
+              "description": "Workflow engine for reliable reward calculation and distribution."
+            },
+            {
+              "name": "Identity & Auth",
+              "id": "clerk",
+              "tech": "Clerk",
+              "description": "Authentication and user management."
+            }
+          ],
+          "dataFlows": [
+            {
+              "from": "www-ti4kgdem",
+              "to": "svc-resource-collector",
+              "protocol": "ConnectRPC",
+              "data": "Documents, Images, Location"
+            },
+            {
+              "from": "svc-resource-collector",
+              "to": "svc-reward-calculator",
+              "protocol": "Internal gRPC",
+              "data": "Validation Events"
+            },
+            {
+              "from": "svc-reward-calculator",
+              "to": "Temporal",
+              "protocol": "gRPC",
+              "data": "Reward Workflows"
+            }
+          ]
+        }
+      },
+      {
+        "fileName": "STRATEGY.jsonld",
+        "content": {
+          "@context": "https://schema.org/",
+          "@type": "CreativeWork",
+          "name": "Strategy - Resource Provider Network",
+          "description": "Strategic roadmap for the Etzhayyim Resource Provider Network.",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "breadcrumb": "Strategy"
+          },
+          "milestones": [
+            {
+              "name": "Phase 1: Foundation",
+              "goal": "Establish the core platform for data contribution (Docs, Images).",
+              "status": "In Progress"
+            },
+            {
+              "name": "Phase 2: Compute Integration",
+              "goal": "Enable GPU compute sharing via WebGPU and background processing.",
+              "status": "Pending"
+            },
+            {
+              "name": "Phase 3: Geographic Expansion",
+              "goal": "Incentivize location-based data collection for real-time analytics.",
+              "status": "Pending"
+            },
+            {
+              "name": "Phase 4: Economy Scale",
+              "goal": "Launch full-scale tokenized/monetary reward system with automated settlement.",
+              "status": "Pending"
+            }
+          ]
+        }
+      },
+      {
+        "fileName": "activities.jsonld",
+        "content": {
+          "@context": "https://schema.org/",
+          "@type": "CreativeWork",
+          "name": "Operational Activities - Resource Provider Network",
+          "activities": [
+            {
+              "@type": "Action",
+              "identifier": "ACT-RES-101",
+              "name": "Resource Registration",
+              "description": "User registers as a provider and selects available resources (GPU, Storage, Location).",
+              "performer": "User via www-ti4kgdem"
+            },
+            {
+              "@type": "Action",
+              "identifier": "ACT-RES-102",
+              "name": "Data Contribution",
+              "description": "Uploading documents, images, and other datasets to the platform.",
+              "performer": "Resource Collector Actor"
+            },
+            {
+              "@type": "Action",
+              "identifier": "ACT-RES-103",
+              "name": "Compute Execution",
+              "description": "Running AI inference or training tasks on user's local GPU.",
+              "performer": "WebGPU Engine / App UI"
+            },
+            {
+              "@type": "Action",
+              "identifier": "ACT-RES-104",
+              "name": "Quality Validation",
+              "description": "Verifying the integrity and value of the contributed data or compute results.",
+              "performer": "Validation Proc / Actor"
+            },
+            {
+              "@type": "Action",
+              "identifier": "ACT-RES-105",
+              "name": "Reward Payout",
+              "description": "Finalizing reward calculation and executing the payment workflow.",
+              "performer": "Reward Calculator Actor via Temporal"
+            }
+          ]
+        }
+      },
+      {
+        "fileName": "capabilities.jsonld",
+        "content": {
+          "@context": "https://schema.org/",
+          "@type": "CreativeWork",
+          "name": "Capabilities - Resource Provider Network",
+          "capabilities": [
+            {
+              "@type": "Capability",
+              "identifier": "CAP-RES-001",
+              "name": "Multi-modal Data Ingestion",
+              "description": "Ability to ingest and store documents, images, and metadata from users.",
+              "measure": "Upload Success Rate > 99.9%"
+            },
+            {
+              "@type": "Capability",
+              "identifier": "CAP-RES-002",
+              "name": "Distributed Compute Orchestration",
+              "description": "Orchestrating GPU tasks across a decentralized network of user browsers.",
+              "measure": "Aggregated TFLOPS"
+            },
+            {
+              "@type": "Capability",
+              "identifier": "CAP-RES-003",
+              "name": "Automated Reward Settlement",
+              "description": "Calculating and distributing rewards based on contribution quality and volume.",
+              "measure": "Settlement Accuracy 100%"
+            },
+            {
+              "@type": "Capability",
+              "identifier": "CAP-RES-004",
+              "name": "Location Context Streaming",
+              "description": "Securely streaming and anonymizing user location data for analytics.",
+              "measure": "Latency < 500ms"
+            }
+          ]
+        }
+      },
+      {
+        "fileName": "scheduler.jsonld",
+        "content": {
+          "@context": [
+            "https://schema.org/",
+            {
+              "etzhayyim": "https://etzhayyim.com/schemas/",
+              "capabilities": "etzhayyim:capabilities",
+              "survivalIndicators": "etzhayyim:survivalIndicators",
+              "scheduler": "etzhayyim:scheduler",
+              "milestones": "etzhayyim:milestones",
+              "blockers": "etzhayyim:blockers",
+              "dependsOn": {
+                "@id": "etzhayyim:dependsOn",
+                "@type": "@id"
+              },
+              "ingestKey": "etzhayyim:ingestKey",
+              "window": "etzhayyim:window",
+              "valueUpdatedAt": "etzhayyim:valueUpdatedAt"
+            }
+          ],
+          "@type": "CreativeWork",
+          "name": "Etzhayyim Resource Provider Project (etzhayyim-project-resource-provider) Scheduler",
+          "identifier": "etzhayyim-project-resource-provider/scheduler",
+          "description": "Project schedule (milestones) and blockers.",
+          "dateCreated": "2026-02-15T04:25:26+00:00",
+          "milestones": [
+            {
+              "@type": "CreativeWork",
+              "name": "Develop Reward Calculator Actor with Temporal workflow.",
+              "status": "Planned",
+              "dueDate": "2026-02-22"
+            },
+            {
+              "@type": "CreativeWork",
+              "name": "Integrate WebGPU for client-side compute contribution.",
+              "status": "Planned",
+              "dueDate": "2026-03-01"
+            }
+          ],
+          "blockers": [],
+          "dateModified": "2026-02-15T14:05:52Z"
+        }
+      }
+    ]
+  }
+}
