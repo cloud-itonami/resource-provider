@@ -25,6 +25,32 @@ raw-credential custody, and the fiat MoR / payout settlement rail stay on etzhay
 via consent-capability. They are not modeled as collections in this repo. If you are
 looking for the regulated execution path, it is not here and is not missing.
 
+## The short path: run the checks without installing anything
+
+The suite at `test/resource_provider_test.cljs` takes **no dependencies**. It loads
+`kotoba/src/registry.ts` and `kotoba/src/types.ts` under node's own TypeScript
+stripping and drives all 17 real operations against an in-memory substrate that
+records which SDK method each write went through — so the plaintext/sealed split is
+asserted from behaviour, not from reading the source.
+
+```bash
+nbb test/resource_provider_test.cljs
+```
+
+```
+SCANNED 17 registry operations
+SCANNED 20 id literals from the TypeScript suite
+SCANNED 6 declared collections/inner types
+SCANNED 80 checks
+resource-provider-check: OK
+```
+
+Needs node v23.6+ (or v22.6+ with `--experimental-strip-types`); measured on
+v26.7.0. Exit codes are three-valued on purpose: **0** passed, **1** a check
+failed, **2** refused — the sources could not be loaded, an extraction returned
+too little to be trusted, or the registry stopped exporting 17 operations. A run
+that could not measure must not be reportable as a run that found nothing.
+
 ## Prerequisites
 
 Node and npm. The implementation lives in `kotoba/`.
@@ -117,7 +143,7 @@ const receipt = await e.write<Record<string, unknown>>({
 10 passed. If you are changing the sealed path, this is the cheapest way to confirm
 your test run is actually exercising it.
 
-### A known weakness — do not use this test as your proof
+### A known weakness of the vitest read-cap test — now covered elsewhere
 
 `-t "enforces read-cap"` (the test asserting a non-recipient sees zero profiles)
 **still passes under the break above.** With a plaintext write, `scanProfiles` reads
@@ -125,9 +151,12 @@ via `encryptedRead` and finds nothing, so the outsider sees zero — the asserti
 satisfied because the data is *absent*, not because it is *access-controlled*. The
 test cannot distinguish those two states.
 
-So: verify read-cap with the **full** `npm test`, not with that scenario alone. The
-test would be strengthened by asserting in the same case that the *owner* still sees
-the profile while the outsider does not.
+The dependency-free suite closes exactly this gap, by asserting the pair in one
+state: `read-cap-owner-still-sees-the-record-the-outsider-cannot` reads the profile
+back **as the owner** at the same moment the outsider reads zero. Absence fails that
+pair, so the plaintext-write break cannot slip through it. Two of its other checks
+catch the same break independently — the substrate's plaintext records are searched
+for the geo string and the device fingerprint.
 
 ## Where things are
 

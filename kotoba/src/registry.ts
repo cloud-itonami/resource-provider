@@ -26,6 +26,7 @@ import {
   isDecimalString,
   isPct,
   isResourceType,
+  isSafeId,
   isUint,
   listingDidFor,
   rkeyOf,
@@ -95,6 +96,7 @@ async function listingExists(e: Etzhayyim, listingId: string): Promise<boolean> 
 
 export async function registerListing(e: Etzhayyim, input: RegisterListingInput): Promise<RegisterListingOutput> {
   if (!input.listingId || !input.region) return { status: "rejected", error: "missingRequiredFields" };
+  if (!isSafeId(input.listingId)) return { status: "rejected", error: "invalidListingId" };
   if (!isResourceType(input.resourceType)) return { status: "rejected", error: "invalidResourceType" };
   if (!isUint(input.capacity)) return { status: "rejected", error: "invalidCapacity" };
   const rkey = rkeyOf("listing", input.listingId);
@@ -117,7 +119,7 @@ export async function registerListing(e: Etzhayyim, input: RegisterListingInput)
 }
 
 export async function getListing(e: Etzhayyim, input: GetListingInput): Promise<GetListingOutput> {
-  if (!input.listingId) return { error: "invalidListingId" };
+  if (!isSafeId(input.listingId)) return { error: "invalidListingId" };
   const rkey = rkeyOf("listing", input.listingId);
   const resp = await e.read<ResourceListingRecord>({ collection: RESOURCE_LISTING_COLLECTION, rkey }).catch(() => ({ records: [] }));
   const r = resp.records[0];
@@ -139,6 +141,8 @@ export async function listListings(e: Etzhayyim, input: ListListingsInput = {}):
 
 export async function recordStat(e: Etzhayyim, input: RecordStatInput): Promise<RecordStatOutput> {
   if (!input.statId || !input.listingId) return { status: "rejected", error: "missingRequiredFields" };
+  if (!isSafeId(input.statId)) return { status: "rejected", error: "invalidStatId" };
+  if (!isSafeId(input.listingId)) return { status: "rejected", error: "invalidListingId" };
   if (!isResourceType(input.resourceType)) return { status: "rejected", error: "invalidResourceType" };
   if (!isUint(input.contributionCount)) return { status: "rejected", error: "invalidContributionCount" };
   if (!isUint(input.acceptedUnits)) return { status: "rejected", error: "invalidAcceptedUnits" };
@@ -177,6 +181,7 @@ export async function listStats(e: Etzhayyim, input: ListStatsInput = {}): Promi
 
 export async function upsertProfile(e: Etzhayyim, input: UpsertProfileInput): Promise<UpsertProfileOutput> {
   if (!input.profileId || !input.providerDid || !input.displayName) return { status: "rejected", error: "missingRequiredFields" };
+  if (!isSafeId(input.profileId)) return { status: "rejected", error: "invalidProfileId" };
   const body: ProviderProfileBody = {
     profileId: input.profileId,
     providerDid: input.providerDid,
@@ -226,6 +231,7 @@ export async function listProfiles(e: Etzhayyim, input: ListProfilesInput = {}):
 
 export async function submitContribution(e: Etzhayyim, input: SubmitContributionInput): Promise<SubmitContributionOutput> {
   if (!input.entryId || !input.providerDid || !input.listingId || !input.payloadRef) return { status: "rejected", error: "missingRequiredFields" };
+  if (!isSafeId(input.entryId)) return { status: "rejected", error: "invalidEntryId" };
   if (!isResourceType(input.resourceType)) return { status: "rejected", error: "invalidResourceType" };
   if (!isPct(input.qualityScore)) return { status: "rejected", error: "invalidQualityScore" };
   const body: ContributionEntryBody = {
@@ -279,6 +285,7 @@ export async function listContributions(e: Etzhayyim, input: ListContributionsIn
 
 export async function postLedger(e: Etzhayyim, input: PostLedgerInput): Promise<PostLedgerOutput> {
   if (!input.ledgerId || !input.providerDid || !input.entryId || !input.currency) return { status: "rejected", error: "missingRequiredFields" };
+  if (!isSafeId(input.ledgerId)) return { status: "rejected", error: "invalidLedgerId" };
   if (!isDecimalString(input.amount)) return { status: "rejected", error: "invalidAmount" };
   const body: RewardLedgerBody = {
     ledgerId: input.ledgerId,
@@ -331,6 +338,7 @@ export async function listLedger(e: Etzhayyim, input: ListLedgerInput = {}): Pro
 
 export async function setBalance(e: Etzhayyim, input: SetBalanceInput): Promise<SetBalanceOutput> {
   if (!input.balanceId || !input.providerDid || !input.currency) return { status: "rejected", error: "missingRequiredFields" };
+  if (!isSafeId(input.balanceId)) return { status: "rejected", error: "invalidBalanceId" };
   if (!isDecimalString(input.balance)) return { status: "rejected", error: "invalidBalance" };
   const body: RewardBalanceBody = {
     balanceId: input.balanceId,

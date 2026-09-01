@@ -375,12 +375,37 @@ export function isDecimalString(s: unknown): s is string {
 export function isResourceType(s: unknown): s is ResourceType {
   return s === "gpu" || s === "storage" || s === "data" || s === "location";
 }
+/**
+ * Characters an id may carry. AT Protocol record keys allow [A-Za-z0-9.~:_-];
+ * this is that set minus ':', so an id can never be mistaken for the segment
+ * separator the DID derivations below use. Ids are folded to lower case in both
+ * the record key and the DID, so the two derivations agree.
+ */
+const SAFE_ID = /^[A-Za-z0-9._~-]{1,256}$/;
+export function isSafeId(s: unknown): s is string {
+  return typeof s === "string" && SAFE_ID.test(s);
+}
 export function listingDidFor(id: string): string {
   return `${RESOURCE_PROVIDER_DID_PREFIX}listing:${id.toLowerCase()}`;
 }
 export function statDidFor(id: string): string {
   return `${RESOURCE_PROVIDER_DID_PREFIX}stat:${id.toLowerCase()}`;
 }
+/**
+ * Record key for an id. This is NOT a sanitiser: it must stay injective,
+ * because the record key is where the record lives while the DID is what the
+ * record calls itself, and the two must name the same thing.
+ *
+ * An earlier version replaced every run of [^a-z0-9] with "-". That mapped
+ * "gpu.west", "gpu_west", "gpu-west" and "gpu~west" onto the single key
+ * "listing-gpu-west" while giving each a different DID. Two consequences, both
+ * silent: the second provider to register was told "alreadyExists" and handed
+ * the FIRST provider's DID and URI, and contributionStat's foreign key -- which
+ * this repo advertises as rejecting a listing that does not exist -- admitted
+ * "gpu_west" on the strength of a "gpu.west" registration.
+ *
+ * Callers reject ids failing isSafeId rather than folding them together.
+ */
 export function rkeyOf(prefix: string, id: string): string {
-  return `${prefix}-${id.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  return `${prefix}-${id.toLowerCase()}`;
 }
