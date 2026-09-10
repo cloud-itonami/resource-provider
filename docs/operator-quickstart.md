@@ -27,14 +27,14 @@ looking for the regulated execution path, it is not here and is not missing.
 
 ## The short path: run the checks without installing anything
 
-The suite at `test/resource_provider_test.cljs` takes **no dependencies**. It loads
+The suite at `test/resource_provider_test.kotoba` takes **no dependencies**. It loads
 `kotoba/src/registry.ts` and `kotoba/src/types.ts` under node's own TypeScript
 stripping and drives all 17 real operations against an in-memory substrate that
 records which SDK method each write went through — so the plaintext/sealed split is
 asserted from behaviour, not from reading the source.
 
 ```bash
-nbb test/resource_provider_test.cljs
+nbb test/resource_provider_test.kotoba
 ```
 
 ```

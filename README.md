@@ -45,7 +45,7 @@ it is deliberately absent, not missing.
 | `kotoba/src/registry.ts` | the 17 exported operations; plaintext vs sealed paths |
 | `kotoba/src/index.ts` | public barrel |
 | `kotoba/test/resource-provider.test.ts` | 10 vitest tests over the same operations; needs `npm install` |
-| `test/resource_provider_test.cljs` | 80 checks, **no dependencies** — the boundary, record identity, and the validators |
+| `test/resource_provider_test.kotoba` | 80 checks, **no dependencies** — the boundary, record identity, and the validators |
 | `PROJECT.jsonld` | project metadata and task tracking |
 | `migration.edn`, `MIGRATION-TODO.md` | extraction record from `etzhayyim/root` |
 
@@ -56,7 +56,7 @@ which they have not been since the consolidation.)
 
 ## Status
 
-- **kotoba implementation** — 17 operations. `nbb test/resource_provider_test.cljs`
+- **kotoba implementation** — 17 operations. `nbb test/resource_provider_test.kotoba`
   runs 80 checks against them and passes; it installs nothing.
 - **The vitest suite is not runnable on every machine.** It needs two git
   dependencies, and installing those needs package `prepare` scripts. Measured
