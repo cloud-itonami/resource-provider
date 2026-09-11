@@ -1,4 +1,4 @@
-#!/usr/bin/env nbb
+#!/usr/bin/env kbb
 ;; resource-provider — executable specification, in the counted plane.
 ;;
 ;; This repo's stated reason to exist is one boundary: what the substrate may
@@ -17,7 +17,7 @@
 ;; find. Nothing else about the source is touched, and the rewrite is asserted
 ;; to be the only relative import in the file.
 ;;
-;;   nbb test/resource_provider_test.cljs
+;;   kbb --backend sci test/resource_provider_test.cljk
 ;;
 ;; exit 0 = all checks passed, 1 = a check failed, 2 = REFUSED (could not
 ;; measure). 2 is not 1: "I could not run the checks" must not be reportable as
